@@ -10,10 +10,10 @@ let s;
 let a;
 
 function preload() {
-  sound1 = new Audio("sounds/Delta Polylogue.mp3");
-  sound2 = new Audio("sounds/Arp2600 K3.mp3");
-  sound3 = new Audio("sounds/Echo Pad.mp3");
-  sound4 = new Audio("sounds/808 Pure.mp3");
+  sound1 = new Audio("demo/Delta Polylogue.mp3");
+  sound2 = new Audio("demo/Arp2600 K3.mp3");
+  sound3 = new Audio("demo/Echo Pad.mp3");
+  sound4 = new Audio("demo/808 Pure.mp3");
 }
 
 function setup() {
