@@ -29,7 +29,6 @@ function setup() {
   createCanvas(1200, 800);
   textAlign(CENTER);
   textSize(100);
-  createP('Music from DEGCOHT by <a href="https://patriciataxxon.bandcamp.com/album/techdog-1">Patricia Taxxon</a>');
   createKickCues();
   createBellCues();
   createSnareCues();
