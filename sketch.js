@@ -1,144 +1,97 @@
-let mp3;
-const SNARE_TIME_1 = 16;
-const SNARE_TIME_2 = 16;
-const SHORT_STRENGTH = 25;
-const LONG_STRENGTH = 50;
-const KICK_TIME = 50;
-const BG_SECTIONS = 50;
-const BAR_WIDTH = 40;
-const BALL_RADIUS = 80;
-const DRAG = 0.98;
-let snareTimer = 0;
-let snarePos = 0;
-let snareTop = false;
-let kickTimer = 0;
-let bellTimer = 0;
-let ballPos;
-let ballVel;
-let effectTimer = 0;
-let BGColors;
-let BGIndex = 0;
-let BGPosition = 0;
-let BGDirection = "up";
+let sounds = [];
+let analysers = [];
+
+let sound1;
+let sound2;
+let sound3;
+let sound4;
+
+let s;
+let a;
 
 function preload() {
-  mp3 = loadSound("DEGCOHT cut.mp3");
+  sound1 = new Audio("sounds/Delta Polylogue.mp3");
+  sound2 = new Audio("sounds/Arp2600 K3.mp3");
+  sound3 = new Audio("sounds/Echo Pad.mp3");
+  sound4 = new Audio("sounds/808 Pure.mp3");
 }
 
 function setup() {
   createCanvas(1200, 800);
-  textAlign(CENTER);
-  textSize(100);
-  createKickCues();
-  createBellCues();
-  createSnareCues();
-  createEffectCues();
-  mp3.onended(reset);
-  reset();
+  sounds.push(sound1);
+  sounds.push(sound2);
+  sounds.push(sound3);
+  sounds.push(sound4);
+  getAnalysers();
 }
 
-function reset() {
-  BGColors = ["darkgrey", "blue", "darkgreen"]
-  snareTimer = 0;
-  snarePos = 0;
-  kickTimer = 0;
-  bellTimer = 0;
-  ballPos = createVector(width / 2, height / 2);
-  ballVel = createVector(0, 0);
-  effectTimer = 0;
-  BGIndex = 0;
-  BGPosition = 0;
+function getAnalysers(){
+  for (let i = 0; i < sounds.length; i++) {
+    const sound = sounds[i];
+    let analyser = makeAnalyser(sound);
+    analysers[i] = analyser;
+  }
+}
+
+function makeAnalyser(audio){
+  const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+
+  // Get the source
+  audio.onplay = () => audioCtx.resume();
+  const source = audioCtx.createMediaElementSource(audio);
+
+  // Create an analyser
+  const analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 2 ** 8;
+
+  // Connect parts
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  return analyser;
 }
 
 function draw() {
-  background(BGColors[0]);
-  if (!mp3.isPlaying()) {
-    fill("black");
-    text("Click to begin", width / 2, height / 2);
-    return;
-  }
-  effectTimer = max(effectTimer - 1, 0);
-  kickTimer = max(kickTimer - 6, 0);
-  snareTimer = max(snareTimer - 1, 0);
-
-  updateBall();
-  drawBackground();
-  drawSnareBar();
-  drawBall();
-}
-
-function moveBackground() {
-  BGPosition++;
-  if (BGPosition >= BG_SECTIONS) {
-    BGIndex = (BGIndex + 1) % BGColors.length;
-    BGPosition = 0;
-    BGDirection = random(["left", "right", "up", "down"]);
-  }
-}
-
-function drawBackground() {
-  if (effectTimer > 0) moveBackground();
-  background(BGColors[BGIndex]);
-  const nextBG = (BGIndex + 1) % BGColors.length;
-  noStroke();
-  fill(BGColors[nextBG]);
-  switch (BGDirection) {
-    case "right":
-      rect(0, 0, (width / BG_SECTIONS) * BGPosition, height);
-      break;
-    case "left":
-      rect((width / BG_SECTIONS) * (BG_SECTIONS - BGPosition), 0, width, height);
-      break;
-    case "up":
-      rect(0, (height / BG_SECTIONS) * (BG_SECTIONS - BGPosition), width, height);
-      break;
-    case "down":
-      rect(0, 0, width, (height / BG_SECTIONS) * BGPosition);
-      break;
-  }
-
-}
-
-function updateBall() {
-  if (ballPos.x < BALL_RADIUS || ballPos.x > width - BALL_RADIUS) {
-    ballPos.x = constrain(ballPos.x, BALL_RADIUS, width - BALL_RADIUS);
-    ballVel.x = -ballVel.x;
-  }
-  if (ballPos.y < BALL_RADIUS || ballPos.y > height - BALL_RADIUS) {
-    ballPos.y = constrain(ballPos.y, BALL_RADIUS, height - BALL_RADIUS);
-    ballVel.y = -ballVel.y;
-  }
-  ballVel.mult(DRAG);
-  ballPos.add(ballVel);
-
-}
-
-function drawBall() {
-  fill("pink");
-  stroke("black");
-  ellipse(ballPos.x, ballPos.y, (BALL_RADIUS * 2) + kickTimer, (BALL_RADIUS * 2) + kickTimer);
-}
-
-function drawSnareBar() {
-  if (snareTimer <= 0) return;
-
+  background(220);
+  translate(0, -height/8);
   fill("red");
-  stroke("black");
-  let snareH = 0;
-  if (snareTimer > SNARE_TIME_2) {
-    snareH = map(snareTimer - SNARE_TIME_2, 0, SNARE_TIME_1, 0, height / 2);
-  } else {
-    snareH = map(snareTimer, 0, SNARE_TIME_2, 0, height / 4);
+  drawWaveform(analysers[0]);
+  translate(0, -height/4);
+  fill("green");
+  drawWaveform(analysers[1]);
+  translate(0, -height/4);
+  fill("blue");
+  drawWaveform(analysers[2]);
+  translate(0, -height/4);
+  fill("yellow");
+  drawWaveform(analysers[3]);
+}
+
+function drawWaveform(a){
+  const bufferLength = a.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  a.getByteTimeDomainData(dataArray);
+  for (let i = 0; i < dataArray.length; i++) {
+    const val = dataArray[i];
+    const x = map(i, 0, dataArray.length, 0, width);
+    const h = map(val, 128, 0, 0, height/6);
+    rect(x, height - h, width/dataArray.length, h);
   }
-  if (snareTop) {
-    rect(snarePos, 0, BAR_WIDTH, snareH);
-  } else {
-    rect(snarePos, height - snareH, BAR_WIDTH, snareH);
-  }
+
+  /* RMS stands for Root Mean Square, basically the root square of the
+  * average of the square of each value. */
+  // var rms = 0;
+  // for (var i = 0; i < dataArray.length; i++) {
+  //   rms += dataArray[i] * dataArray[i];
+  // }
+  // rms /= dataArray.length;
+  // rms = Math.sqrt(rms);
+  // const val = abs(128-rms);
+  // rect(0, height - val, width, val);
 }
 
 function mousePressed() {
-  if (!mp3.isPlaying()) {
-    mp3.play();
-  }
+  sounds.forEach(element => {
+    element.play();
+  });
 }
