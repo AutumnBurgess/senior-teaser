@@ -14,14 +14,13 @@
 
     document.getElementById('action').addEventListener('click', async () => {
       // Initialize default ChucK object, if not already initialized
-      window.theChuck ??= await Chuck.init([]);
+      window.theChuck ??= await Chuck.init([
+        { serverFilename: "./scripts/test.ck", virtualFilename: "test.ck" },
+        { serverFilename: "./sounds/5 loops and 5 one shots snare c3.mp3", virtualFilename: "test.wav" },
+      ]);
       console.log('clicked');
       // Run ChucK code
-      theChuck.runCode(`
-          SinOsc sin => dac;
-          440 => sin.freq;
-          1::second => now;
-        `);
+      theChuck.runFile('test.ck');
     });
   </script>
   <script src="libraries/p5.min.js"></script>
@@ -29,7 +28,7 @@
 </head>
 
 <body>
-  <!-- <script src="sketch.js"></script> -->
+  <script src="sketch.js"></script>
   <div id="action">hii</div>
 </body>
 
