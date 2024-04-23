@@ -6,13 +6,12 @@ function setup() {
   createCanvas(500, 500).parent('p5here');
 }
 
-function draw() {
+async function draw() {
   if (!window.loaded) return;
   if (!looping) {
     looping = true;
     theChuck.setFloat('rateChange', 0.0);
-    //theChuck.runFileWithArgs('loop.ck', 'loop')
-    theChuck.runFile('splice.ck');
+    theChuck.runFileWithArgs('loop.ck', 'loop')
   }
   background(220);
   clicks.forEach(click => {
@@ -23,7 +22,7 @@ function draw() {
 
 function removeClick(index) {
   return () => {
-    console.log(index);
+    //console.log(index);
   }
 }
 
