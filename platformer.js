@@ -8,14 +8,62 @@ class Rectangle {
         this.w = w;
         this.h = h;
 
-        this.draw = function (g) {
-            g.rect(this.x, this.y, this.w, this.h);
+        this.draw = function (firstColor, secondColor, swipePos, direction, pulseSize = 0) {
+            this.px = this.x - pulseSize / 2;
+            this.py = this.y - pulseSize / 2;
+            this.pw = this.w + pulseSize;
+            this.ph = this.h + pulseSize;
+            switch (direction) {
+                case U:
+                    this.drawVert(secondColor, firstColor, swipePos);
+                    break;
+                case D:
+                    this.drawVert(firstColor, secondColor, swipePos);
+                    break;
+                case L:
+                    this.drawVert(secondColor, firstColor, swipePos);
+                    break;
+                case R:
+                    this.drawVert(firstColor, secondColor, swipePos);
+                    break;
+
+            }
+            if (direction) {
+                this.drawHori(firstColor, secondColor, swipePos);
+            } else {
+                this.drawVert(firstColor, secondColor, swipePos);
+            }
+        }
+
+        this.drawHori = function (rightColor, leftColor, swipeX) {
+            if (swipeX < this.px) {
+                fill(rightColor)
+                rect(this.px, this.py, this.pw, this.ph);
+            } else if (swipeX > this.px + this.pw) {
+                fill(leftColor);
+                rect(this.px, this.py, this.pw, this.ph);
+            } else {
+                fill(leftColor);
+                rect(this.px, this.py, swipeX - this.px, this.ph);
+                fill(rightColor);
+                rect(swipeX, this.py, this.px - swipeX + this.pw, this.ph);
+            }
         };
 
-        this.drawPulse = function (g, t) {
-            g.rect(this.x - t / 2, this.y - t / 2, this.w + t, this.h + t);
-        };
-
+        this.drawVert = function (downColor, upColor, swipeY) {
+            if (swipeY < this.py) {
+                fill(downColor)
+                rect(this.px, this.py, this.pw, this.ph);
+            } else if (swipeY > this.py + this.ph) {
+                fill(upColor);
+                rect(this.px, this.py, this.pw, this.ph);
+            } else {
+                fill(upColor);
+                rect(this.px, this.py, this.pw, swipeY - this.py);
+                fill(downColor);
+                rect(this.px, swipeY, this.pw, this.py - swipeY + this.ph);
+            }
+        }
     }
 }
 
@@ -31,8 +79,9 @@ let p = {
     onGround: false,
     colliding: false,
     jump: false,
-    draw: function (g) {
-        g.rect(this.x, this.y + 1, this.w, this.h)
+    draw: function (firstColor, secondColor, swipePos, horizontal) {
+        let rectangle = new Rectangle(this.x, this.y + 1, this.w, this.h);
+        rectangle.draw(firstColor, secondColor, swipePos, horizontal);
     },
     update: function () {
         if (!this.onGround) {
@@ -72,6 +121,13 @@ function keyPressed() {
         jumpPressed = true;
         if (p.onGround) p.jump = true;
     }
+    if (key == 'w') {
+        print(floor(p.x) + ', ' + floor(p.y));
+    }
+
+    if (playing) return;
+    playing = true;
+    allSound.play();
 }
 
 function rectCollision(r1, r2) {
