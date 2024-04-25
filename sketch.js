@@ -65,7 +65,6 @@ function setup() {
   rects.push(new Rectangle(500, 10, 145, 60));
   rects.push(new Rectangle(760, -50, 200, 150));
   rects.push(new Rectangle(600, -200, 100, 80));
-
   rects.push(new Rectangle(220, -300, 300, 50));
 
   bgRects.push(new Rectangle(0, 0, 100, 100));
@@ -73,6 +72,8 @@ function setup() {
   bgRects.push(new Rectangle(500, 280, 200, 180));
   bgRects.push(new Rectangle(300, -100, 100, 100));
   bgRects.push(new Rectangle(426, -435, 40, 100));
+  bgRects.push(new Rectangle(767, -380, 400, 100));
+
 
   origin = {
     x: width / 2,
