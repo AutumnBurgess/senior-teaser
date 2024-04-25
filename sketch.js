@@ -95,7 +95,7 @@ function draw() {
   if (!playing) {
     textAlign(CENTER);
     textSize(100);
-    text("press a button", width/2, height/2);
+    text("press a button", width / 2, height / 2);
   } else {
     update();
     push();
