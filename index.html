@@ -14,13 +14,13 @@
 
     document.getElementById('load').addEventListener('click', async () => {
       window.theChuck ??= await Chuck.init([
-        { serverFilename: "./scripts/many.ck", virtualFilename: "many.ck" },
         { serverFilename: "./scripts/loop.ck", virtualFilename: "loop.ck" },
-        { serverFilename: "./scripts/splice.ck", virtualFilename: "splice.ck" },
-        { serverFilename: "./scripts/changeBeat.ck", virtualFilename: "changeBeat.ck" },
-        { serverFilename: "./sounds/5 loops and 5 one shots snare c3.wav", virtualFilename: "snare" },
-        { serverFilename: "./sounds/5 loops and 5 one shots c3 sine.wav", virtualFilename: "sine" },
-        { serverFilename: "./sounds/5 loops and 5 one shots cheery synth loop c maj.wav", virtualFilename: "loop" },
+        { serverFilename: "./sounds/anticipation arp.wav", virtualFilename: "arp" },
+        { serverFilename: "./sounds/anticipation hihat.wav", virtualFilename: "hihat" },
+        { serverFilename: "./sounds/anticipation kick.wav", virtualFilename: "kick" },
+        { serverFilename: "./sounds/anticipation pad.wav", virtualFilename: "pad" },
+        { serverFilename: "./sounds/anticipation synbass.wav", virtualFilename: "synbass" },
+        { serverFilename: "./sounds/anticipation.wav", virtualFilename: "all" },
       ]);
       window.loaded = true;
       document.getElementById('load').style.display = "none";
@@ -28,6 +28,7 @@
   </script>
   <script src="libraries/p5.min.js"></script>
   <script src="libraries/p5.sound.min.js"></script>
+  <script src="platformer.js"></script>
   <script src="sketch.js"></script>
 </head>
 
