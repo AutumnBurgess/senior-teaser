@@ -55,7 +55,7 @@ function setup() {
     allSound.addCue(time, onKick, time);
   });
 
-  createCanvas(800, 600, 'p2d').parent('#p5here');
+  createCanvas(windowWidth, windowHeight, 'p2d').parent('#p5here');
   colorMode(HSB, 100);
   rects.push(new Rectangle(-500, 560, 2000, 40));
   rects.push(new Rectangle(200, 420, 200, 40));
