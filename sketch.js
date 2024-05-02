@@ -2,20 +2,11 @@
 let shredIndex = 0;
 let clicks = [];
 let looping = false;
-let arpMidi;
-let hihatMidi;
 let kickMidi;
-let padMidi;
 let synbassMidi;
-let arpSound;
-let hihatSound;
-let kickSound;
-let padSound;
-let synbassSound;
 let allSound;
 let playing = false;
 let kickTimer = 0;
-let synTimer = 0;
 
 const WIPE_SECTIONS = 20;
 const PALETTES = [{ fg: 'black', bg: 'white', mg: 'lightgrey' }, { fg: 'orange', bg: 'blue', mg: 'lightblue' }, { fg: 'green', bg: 'pink', mg: 'lightpink' }];
@@ -58,7 +49,7 @@ function setup() {
   synTimes.forEach(time => {
     allSound.addCue(time, onSyn, time);
   });
-  
+
 
   createCanvas(windowWidth, windowHeight, 'p2d').parent('#p5here');
   colorMode(HSB, 100);
@@ -97,10 +88,6 @@ function onKick(time) {
   kickTimer = 10;
 }
 
-function onSyn(time){
-  synTimer = 10;
-}
-
 function draw() {
   if (!playing) {
     textAlign(CENTER);
@@ -113,8 +100,6 @@ function draw() {
     pop();
     drawBorder();
   }
-
-  print(map(p.y,540,-500,0,127));
 }
 
 function drawScene() {
