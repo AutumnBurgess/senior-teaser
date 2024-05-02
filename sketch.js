@@ -7,6 +7,7 @@ let synbassMidi;
 let allSound;
 let playing = false;
 let kickTimer = 0;
+let synTimer = 0;
 
 const WIPE_SECTIONS = 20;
 const PALETTES = [{ fg: 'black', bg: 'white', mg: 'lightgrey' }, { fg: 'orange', bg: 'blue', mg: 'lightblue' }, { fg: 'green', bg: 'pink', mg: 'lightpink' }];
@@ -100,6 +101,10 @@ function draw() {
     pop();
     drawBorder();
   }
+}
+
+function onSyn() {
+
 }
 
 function drawScene() {
