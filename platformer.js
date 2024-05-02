@@ -69,8 +69,8 @@ class Rectangle {
 
 // The player object
 let p = {
-    x: 100,
-    y: 560,
+    x: -1100,
+    y: 530,
     w: 30,
     h: 30,
     vx: 0,
@@ -124,7 +124,9 @@ function keyPressed() {
     if (key == 'w') {
         print(floor(p.x) + ', ' + floor(p.y));
     }
+}
 
+function mousePressed() {
     if (playing) return;
     playing = true;
     allSound.play();
