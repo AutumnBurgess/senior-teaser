@@ -3,11 +3,11 @@ let shredIndex = 0;
 let clicks = [];
 let looping = false;
 let kickMidi;
-let synbassMidi;
+let hatMidi;
 let allSound;
 let playing = false;
 let kickTimer = 0;
-let synTimer = 0;
+let hatTimer = 0;
 
 const WIPE_SECTIONS = 20;
 const PALETTES = [{ fg: 'black', bg: 'white', mg: 'lightgrey' }, { fg: 'orange', bg: 'blue', mg: 'lightblue' }, { fg: 'green', bg: 'pink', mg: 'lightpink' }];
@@ -37,7 +37,7 @@ let center;
 
 function preload() {
   kickMidi = loadJSON('midis/kick.json');
-  synbassMidi = loadJSON('midis/synbass.json');
+  hatMidi = loadJSON('midis/3 4 hat.json');
   allSound = loadSound('sounds/anticipation.wav');
 }
 
@@ -46,11 +46,10 @@ function setup() {
   kickTimes.forEach(time => {
     allSound.addCue(time, onKick, time);
   });
-  let synTimes = synbassMidi.tracks[0].notes.map(e => e.time);
-  synTimes.forEach(time => {
-    allSound.addCue(time, onSyn, time);
+  let hatTimes = hatMidi.tracks[0].notes.map(e => e.time);
+  hatTimes.forEach(time => {
+    allSound.addCue(time, onHat, time);
   });
-
 
   createCanvas(windowWidth, windowHeight, 'p2d').parent('#p5here');
   colorMode(HSB, 100);
@@ -89,6 +88,10 @@ function onKick(time) {
   kickTimer = 10;
 }
 
+function onHat(time) {
+  hatTimer = 10;
+}
+
 function draw() {
   if (!playing) {
     textAlign(CENTER);
@@ -101,10 +104,7 @@ function draw() {
     pop();
     drawBorder();
   }
-}
-
-function onSyn() {
-
+  print(frameRate());
 }
 
 function drawScene() {
@@ -160,10 +160,10 @@ function drawBorder() {
 
 function update() {
   kickTimer = max(kickTimer - 1, 0);
-  synTimer = max(synTimer - 1, 0);
+  hatTimer = max(hatTimer - 1, 0);
 
   if (frameCount % 10 == 0) {
-    incrementWipe();
+    // incrementWipe();
   }
 
   dx = center.x - p.x;
