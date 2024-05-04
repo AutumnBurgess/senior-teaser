@@ -18,6 +18,8 @@ const MAIN = 2;
 const OUTRO = 3;
 let state = WAITING;
 let curCorner = 0;
+let curCornerMod = 0;
+const CORNER_MOD = 4;
 
 const PALETTES = [{ fg: 'black', bg: 'white', mg: 'lightgrey' }, { fg: 'orange', bg: 'blue', mg: 'lightblue' }, { fg: 'green', bg: 'pink', mg: 'lightpink' }];
 let borderHeight = 0;
@@ -189,8 +191,14 @@ function drawScene() {
   }
 
   p.draw(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset, curCorner);
+
   for (let i = 0; i < rects.length; i++) {
-    rects[i].draw(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset);
+    if (i % CORNER_MOD == curCornerMod) {
+      rects[i].drawNotched(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset, curCorner);
+    } else {
+      rects[i].draw(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset);
+    }
+
   }
 
   if (DEBUG) {

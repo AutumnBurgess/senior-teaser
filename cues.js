@@ -13,8 +13,15 @@ function addCues() {
         bassEnd = note.t + note.d;
     }
 
-    function onArp() {
+    function onArp(note) {
+        // if (note.v < 0.6) return;
         curCorner = (curCorner + 1) % 4;
+        // if (curCorner == 0) curCornerMod = (curCornerMod + 1) % CORNER_MOD;
+        if (curCorner == 0) {
+            curCornerMod = floor(random(CORNER_MOD));
+        }
+        // curCorner = floor(random(4));
+        // curCornerMod = floor(random(CORNER_MOD));
     }
 
     function begin() {
@@ -34,9 +41,9 @@ function addCues() {
     bassTimes.forEach(note => {
         mainSound.addCue(note.t, onBass, note);
     });
-    let arpTimes = arpMidi.tracks[0].notes.map(e => e.time);
-    arpTimes.forEach(time => {
-        mainSound.addCue(time, onArp, time);
+    let arpTimes = arpMidi.tracks[0].notes.map(e => { return { t: e.time, v: e.velocity } });
+    arpTimes.forEach(note => {
+        mainSound.addCue(note.t, onArp, note);
     });
 
     introSound.onended(begin);

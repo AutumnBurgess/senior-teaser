@@ -7,7 +7,8 @@ class Rectangle {
         this.y = y;
         this.w = w;
         this.h = h;
-
+        this.cs = floor(min(w, h) / 4);
+        this.co = floor(random(4));
         this.draw = function (rightColor, leftColor, swipePos, pulseSize = 0) {
             this.px = this.x - pulseSize / 2;
             this.py = this.y - pulseSize / 2;
@@ -26,6 +27,35 @@ class Rectangle {
                 rect(swipePos, this.py, this.px - swipePos + this.pw, this.ph);
             }
         }
+
+        this.drawNotched = function (rightColor, leftColor, swipePos, corner = 0, pulseSize = 0) {
+            this.px = this.x - pulseSize / 2;
+            this.py = this.y - pulseSize / 2;
+            this.pw = this.w + pulseSize;
+            this.ph = this.h + pulseSize;
+            let rectangle1;
+            let rectangle2;
+            switch ((corner + this.co) % 4) {
+                case 0://TL
+                    rectangle1 = new Rectangle(this.x, this.y + this.cs, this.cs + 1, this.h - this.cs);
+                    rectangle2 = new Rectangle(this.x + this.cs, this.y, this.w - this.cs, this.h);
+                    break;
+                case 1://TR
+                    rectangle1 = new Rectangle(this.x, this.y, this.w - this.cs, this.h);
+                    rectangle2 = new Rectangle(this.x + this.w - this.cs - 1, this.y + this.cs, this.cs + 1, this.h - this.cs);
+                    break;
+                case 2://BR
+                    rectangle1 = new Rectangle(this.x, this.y, this.w - this.cs, this.h);
+                    rectangle2 = new Rectangle(this.x + this.w - this.cs - 1, this.y, this.cs + 1, this.h - this.cs);
+                    break;
+                case 3://BL
+                    rectangle1 = new Rectangle(this.x, this.y, this.cs + 1, this.h - this.cs);
+                    rectangle2 = new Rectangle(this.x + this.cs, this.y, this.w - this.cs, this.h);
+                    break;
+            }
+            rectangle1.draw(rightColor, leftColor, swipePos);
+            rectangle2.draw(rightColor, leftColor, swipePos);
+        }
     }
 }
 
@@ -42,30 +72,9 @@ let p = {
     colliding: false,
     jump: false,
     draw: function (firstColor, secondColor, swipePos, corner = 0) {
-        const cornerSize = 8;
-        let rectangle1;
-        let rectangle2;
-        // let rectangle = new Rectangle(this.x, this.y, this.w, this.h + 1);
-        switch (corner) {
-            case 0://TL
-                rectangle1 = new Rectangle(this.x, this.y + cornerSize, cornerSize + 1, this.h - cornerSize + 1);
-                rectangle2 = new Rectangle(this.x + cornerSize, this.y, this.w - cornerSize, this.h + 1);
-                break;
-            case 1://TR
-                rectangle1 = new Rectangle(this.x, this.y, this.w - cornerSize, this.h + 1);
-                rectangle2 = new Rectangle(this.x + this.w - cornerSize - 1, this.y + cornerSize, cornerSize + 1, this.h - cornerSize + 1);
-                break;
-            case 2://BR
-                rectangle1 = new Rectangle(this.x, this.y, this.w - cornerSize, this.h + 1);
-                rectangle2 = new Rectangle(this.x + this.w - cornerSize - 1, this.y, cornerSize + 1, this.h - cornerSize);
-                break;
-            case 3://BL
-                rectangle1 = new Rectangle(this.x, this.y, cornerSize + 1, this.h - cornerSize);
-                rectangle2 = new Rectangle(this.x + cornerSize, this.y, this.w - cornerSize, this.h + 1);
-                break;
-        }
-        rectangle1.draw(firstColor, secondColor, swipePos);
-        rectangle2.draw(firstColor, secondColor, swipePos);
+        let rectangle = new Rectangle(this.x, this.y, this.w, this.h + 1);
+        // rectangle.drawNotched(firstColor, secondColor, swipePos, 0, corner);
+        rectangle.draw(firstColor, secondColor, swipePos, 0);
     },
     update: function () {
         if (!this.onGround) {
