@@ -8,60 +8,22 @@ class Rectangle {
         this.w = w;
         this.h = h;
 
-        this.draw = function (firstColor, secondColor, swipePos, direction, pulseSize = 0) {
+        this.draw = function (rightColor, leftColor, swipePos, pulseSize = 0) {
             this.px = this.x - pulseSize / 2;
             this.py = this.y - pulseSize / 2;
             this.pw = this.w + pulseSize;
             this.ph = this.h + pulseSize;
-            switch (direction) {
-                case U:
-                    this.drawVert(secondColor, firstColor, swipePos);
-                    break;
-                case D:
-                    this.drawVert(firstColor, secondColor, swipePos);
-                    break;
-                case L:
-                    this.drawVert(secondColor, firstColor, swipePos);
-                    break;
-                case R:
-                    this.drawVert(firstColor, secondColor, swipePos);
-                    break;
-
-            }
-            if (direction) {
-                this.drawHori(firstColor, secondColor, swipePos);
-            } else {
-                this.drawVert(firstColor, secondColor, swipePos);
-            }
-        }
-
-        this.drawHori = function (rightColor, leftColor, swipeX) {
-            if (swipeX < this.px) {
+            if (swipePos < this.px) {
                 fill(rightColor)
                 rect(this.px, this.py, this.pw, this.ph);
-            } else if (swipeX > this.px + this.pw) {
+            } else if (swipePos > this.px + this.pw) {
                 fill(leftColor);
                 rect(this.px, this.py, this.pw, this.ph);
             } else {
                 fill(leftColor);
-                rect(this.px, this.py, swipeX - this.px, this.ph);
+                rect(this.px, this.py, swipePos - this.px, this.ph);
                 fill(rightColor);
-                rect(swipeX, this.py, this.px - swipeX + this.pw, this.ph);
-            }
-        };
-
-        this.drawVert = function (downColor, upColor, swipeY) {
-            if (swipeY < this.py) {
-                fill(downColor)
-                rect(this.px, this.py, this.pw, this.ph);
-            } else if (swipeY > this.py + this.ph) {
-                fill(upColor);
-                rect(this.px, this.py, this.pw, this.ph);
-            } else {
-                fill(upColor);
-                rect(this.px, this.py, this.pw, swipeY - this.py);
-                fill(downColor);
-                rect(this.px, swipeY, this.pw, this.py - swipeY + this.ph);
+                rect(swipePos, this.py, this.px - swipePos + this.pw, this.ph);
             }
         }
     }
@@ -79,9 +41,31 @@ let p = {
     onGround: false,
     colliding: false,
     jump: false,
-    draw: function (firstColor, secondColor, swipePos, horizontal) {
-        let rectangle = new Rectangle(this.x, this.y + 1, this.w, this.h);
-        rectangle.draw(firstColor, secondColor, swipePos, horizontal);
+    draw: function (firstColor, secondColor, swipePos, corner = 0) {
+        const cornerSize = 8;
+        let rectangle1;
+        let rectangle2;
+        // let rectangle = new Rectangle(this.x, this.y, this.w, this.h + 1);
+        switch (corner) {
+            case 0://TL
+                rectangle1 = new Rectangle(this.x, this.y + cornerSize, cornerSize + 1, this.h - cornerSize + 1);
+                rectangle2 = new Rectangle(this.x + cornerSize, this.y, this.w - cornerSize, this.h + 1);
+                break;
+            case 1://TR
+                rectangle1 = new Rectangle(this.x, this.y, this.w - cornerSize, this.h + 1);
+                rectangle2 = new Rectangle(this.x + this.w - cornerSize - 1, this.y + cornerSize, cornerSize + 1, this.h - cornerSize + 1);
+                break;
+            case 2://BR
+                rectangle1 = new Rectangle(this.x, this.y, this.w - cornerSize, this.h + 1);
+                rectangle2 = new Rectangle(this.x + this.w - cornerSize - 1, this.y, cornerSize + 1, this.h - cornerSize);
+                break;
+            case 3://BL
+                rectangle1 = new Rectangle(this.x, this.y, cornerSize + 1, this.h - cornerSize);
+                rectangle2 = new Rectangle(this.x + cornerSize, this.y, this.w - cornerSize, this.h + 1);
+                break;
+        }
+        rectangle1.draw(firstColor, secondColor, swipePos);
+        rectangle2.draw(firstColor, secondColor, swipePos);
     },
     update: function () {
         if (!this.onGround) {
@@ -124,12 +108,6 @@ function keyPressed() {
     if (key == 'w') {
         print(floor(p.x) + ', ' + floor(p.y));
     }
-}
-
-function mousePressed() {
-    if (playing) return;
-    playing = true;
-    allSound.play();
 }
 
 function rectCollision(r1, r2) {
