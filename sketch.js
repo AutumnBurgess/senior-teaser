@@ -19,6 +19,7 @@ const OUTRO = 3;
 let state = WAITING;
 let curCorner = 0;
 let curCornerMod = 0;
+let notchPercent = 0.2;
 const CORNER_MOD = 4;
 
 const PALETTES = [{ fg: 'black', bg: 'white', mg: 'lightgrey' }, { fg: 'orange', bg: 'blue', mg: 'lightblue' }, { fg: 'green', bg: 'pink', mg: 'lightpink' }];
@@ -42,7 +43,7 @@ let colorFrames = [];
 let curColorFrame = 0;
 let origin;
 let center;
-//distortion begins at 90 seconds
+
 function preload() {
   kickMidi = loadJSON('midis/kick.json');
   hatMidi = loadJSON('midis/hat.json');
@@ -194,7 +195,7 @@ function drawScene() {
 
   for (let i = 0; i < rects.length; i++) {
     if (i % CORNER_MOD == curCornerMod) {
-      rects[i].drawNotched(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset, curCorner);
+      rects[i].drawNotched(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset, curCorner, notchPercent);
     } else {
       rects[i].draw(oldPalette.fg, newPalette.fg, wipePosition - wipeOffset);
     }

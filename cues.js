@@ -22,6 +22,9 @@ function addCues() {
         }
         // curCorner = floor(random(4));
         // curCornerMod = floor(random(CORNER_MOD));
+
+        //distortion begins at 90 seconds
+        notchPercent = map(mainSound.currentTime(), 80, mainSound.duration(), 0.2, 0.5, true);
     }
 
     function begin() {

@@ -7,7 +7,6 @@ class Rectangle {
         this.y = y;
         this.w = w;
         this.h = h;
-        this.cs = floor(min(w, h) / 4);
         this.co = floor(random(4));
         this.draw = function (rightColor, leftColor, swipePos, pulseSize = 0) {
             this.px = this.x - pulseSize / 2;
@@ -28,29 +27,30 @@ class Rectangle {
             }
         }
 
-        this.drawNotched = function (rightColor, leftColor, swipePos, corner = 0, pulseSize = 0) {
+        this.drawNotched = function (rightColor, leftColor, swipePos, corner, notchPercent, pulseSize = 0) {
             this.px = this.x - pulseSize / 2;
             this.py = this.y - pulseSize / 2;
             this.pw = this.w + pulseSize;
             this.ph = this.h + pulseSize;
             let rectangle1;
             let rectangle2;
+            let notchSize = floor(min(w, h) * notchPercent);
             switch ((corner + this.co) % 4) {
                 case 0://TL
-                    rectangle1 = new Rectangle(this.x, this.y + this.cs, this.cs + 1, this.h - this.cs);
-                    rectangle2 = new Rectangle(this.x + this.cs, this.y, this.w - this.cs, this.h);
+                    rectangle1 = new Rectangle(this.x, this.y + notchSize, notchSize + 1, this.h - notchSize);
+                    rectangle2 = new Rectangle(this.x + notchSize, this.y, this.w - notchSize, this.h);
                     break;
                 case 1://TR
-                    rectangle1 = new Rectangle(this.x, this.y, this.w - this.cs, this.h);
-                    rectangle2 = new Rectangle(this.x + this.w - this.cs - 1, this.y + this.cs, this.cs + 1, this.h - this.cs);
+                    rectangle1 = new Rectangle(this.x, this.y, this.w - notchSize, this.h);
+                    rectangle2 = new Rectangle(this.x + this.w - notchSize - 1, this.y + notchSize, notchSize + 1, this.h - notchSize);
                     break;
                 case 2://BR
-                    rectangle1 = new Rectangle(this.x, this.y, this.w - this.cs, this.h);
-                    rectangle2 = new Rectangle(this.x + this.w - this.cs - 1, this.y, this.cs + 1, this.h - this.cs);
+                    rectangle1 = new Rectangle(this.x, this.y, this.w - notchSize, this.h);
+                    rectangle2 = new Rectangle(this.x + this.w - notchSize - 1, this.y, notchSize + 1, this.h - notchSize);
                     break;
                 case 3://BL
-                    rectangle1 = new Rectangle(this.x, this.y, this.cs + 1, this.h - this.cs);
-                    rectangle2 = new Rectangle(this.x + this.cs, this.y, this.w - this.cs, this.h);
+                    rectangle1 = new Rectangle(this.x, this.y, notchSize + 1, this.h - notchSize);
+                    rectangle2 = new Rectangle(this.x + notchSize, this.y, this.w - notchSize, this.h);
                     break;
             }
             rectangle1.draw(rightColor, leftColor, swipePos);
